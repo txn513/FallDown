@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1, minimum-scale=1, maximum-scale=1">
+	<title>bug 1.1</title>
+	<style type="text/css">
+		body{
+		    -webkit-user-select:none;
+		    -moz-user-select:none;
+		    -ms-user-select:none;
+		    user-select:none;
+		    overflow: hidden;
+		}
+		* {
+			padding: 0;
+			margin: 0;
+                    
+		}
+		.score {
+			position: absolute;
+			
+			height: 10%;
+			left: 2%;
+			top: 2%;
+			line-height: 10%;
+			color: #000;
+			font-size: 20px;
+			font-weight: 700;
+		}
+		.conunt {
+			position: absolute;
+			height: 10%;
+			right: 2%;
+			top: 2%;
+			line-height: 10%;
+			color: #000;
+			font-size: 20px;
+			font-weight: 700;
+		}
+        .startMask,
+        .endMask{
+        	position: fixed;
+        	top: 0;
+        	left: 0;
+        	width: 100%;
+        	height: 100%;
+        	background-color: rgba(0,0,0,0.4);
+        	z-index: 100;
+        }
+        .startBtn,
+        .endBtn {
+        	position: absolute;
+        	top: 50%;
+        	left: 50%;
+        	transform: translate(-50%,-50%);
+        	height: 50px;
+        	width: 30%;
+        	line-height: 50px;
+        	text-align: center;
+        	background-color: #0e90d2;
+        	color: #fff;
+        	font-size: 20px;
+        	border-radius: 10px;
+        }
+	</style>
+</head>
+<body>
+	<div class="startMask">
+		<div class="startBtn">开始游戏</div>
+	</div>
+	<div class="endMask" style="display: none;">
+		<div class="endBtn"></div>
+	</div>
+
+
+	<div class="score">分数：<span class="scoreNum" style="color: red;">0</span></div>
+	<div class="conunt"><span class="sec" style="color: red;">30</span>秒</div>
+
+	<script src="http://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+	<script src="fastclick.js"></script>
+	<script type="text/javascript">
+
+		var score = 0;
+		$(function() {
+		    FastClick.attach(document.body);
+
+
+
+		    $('body').css({
+			height: $(window).height(),
+			width: '100%',
+			background: 'url(./bg2.png) no-repeat center 115% / contain'
+		}).on('touchmove',function(){
+			return false;
+		});
+		var showPetalModule = function(num){
+			var html = '';
+		 	var pLeftArr = [];
+		 	var pTopArr = [];
+		 	var randomLeftArr = [];
+		 	var randomSpeed = [];
+		 	var initialPosLeft = [];
+		 	var initialPosTop = [];
+		 	var windowWidth = $(window).width();
+		 	var windowHeight = $(window).height();
+		 	var orginalLeftPos = $(window).width()/2;
+		 	var orginalTopPos = 0;
+
+		 	
+
+		 	var f = {
+		 		insertCon: function(){
+		 			for(var i = 0; i<num; i++){
+		 				html += '<div class="sPetal"></div>';
+				 		pLeftArr.push(orginalLeftPos+Math.floor(Math.random()*windowWidth)-orginalLeftPos);
+				 		randomLeftArr.push(orginalLeftPos+Math.floor(Math.random()*windowWidth)-orginalLeftPos);
+				 		randomSpeed.push(Math.random()*2+1);
+				 		pTopArr.push(orginalTopPos+Math.floor(Math.random()*500-500));
+				 		initialPosTop.push(Math.floor(Math.random()*(-100)));
+
+				 	}
+				 	$('body').prepend(html).css('position','relative');
+		 		},
+		 		setStyle: function(){
+		 			$('.sPetal').each(function(n){
+		 				$(this).css({
+							height: 50,
+							width: 50/126*137,
+							background: "url(./shi.png) no-repeat 0 0/ contain",
+							position: 'absolute',
+							top: initialPosTop[n],
+							left: randomLeftArr[n],
+						});
+		 			});
+		 			
+		 		},
+		 		setInterval: function(){
+		 		// 	var fLeftInterval = setInterval(function(){
+					// 	$('.sPetal').each(function(n){
+						
+					// 		pLeftArr[n] = pLeftArr[n] + Math.floor(Math.random()*200)-100;
+
+					// 		$(this).animate({
+					// 			left: pLeftArr[n]
+					// 		},1800);
+
+
+							
+						
+							
+					// 	});
+						
+					// },2000);
+
+
+					$('.sPetal').each(function(n){
+							var _self = $(this);
+
+							var fall = function(){
+								_self.css('top',initialPosTop[n]).animate({
+									top: windowHeight+$(this).height(),
+								}, randomSpeed[n]*5000, fall);
+							};
+							fall();
+
+							// setInterval(function(){
+							// 	$(this).css('top',initialPosTop[n]).animate({
+							// 		top: windowHeight+$(this).height(),
+							// 	}, randomSpeed[n]*5000);
+							// },	randomSpeed[n]*5100 );
+
+
+
+							// $(this).animate({
+							// 	top: windowHeight+$(this).height(),
+							// }, randomSpeed[n]*5000, function(){
+							// 	$(this).css('top',initialPosTop[n]).animate({
+							// 		top: windowHeight+$(this).height(),
+							// 	},randomSpeed[n]*5000);
+							// });
+
+							
+							// if(pTopArr[n] > windowHeight+$(this).height()){
+							// 	pTopArr[n] = -100;
+							// }
+							// else {
+							// 	pTopArr[n]+=randomSpeed[n];	
+							// }
+						})
+
+					// var fTopInterval = setInterval(function(){
+
+								
+					
+					
+					// },20);
+		 		},
+		 		bindClick: function(){
+		 			$('.sPetal').on('click',function(){
+						//var index = $(this).index();
+						$(this).remove();
+						score++;
+						$('.scoreNum').text(score);
+					});
+		 		},
+		 		init: function(){
+		 			f.insertCon();
+		 			f.setStyle();
+		 			f.setInterval();
+		 			f.bindClick();
+		 		}
+		 	}
+
+
+		 	f.init();
+		};
+
+		$('.startBtn').click(function(){
+			$('.startMask').hide();
+			showPetalModule(100);
+			//倒计时
+		var time =30;
+		var timeCountDown = setInterval(function(){
+			
+			time--
+			$('.sec').text(time);
+			if(time == 0){
+				clearInterval(timeCountDown);
+				$('.endBtn').text('得分：'+ score);
+				$('.endMask').show()
+			}
+		},1000);
+		});
+		
+		
+
+
+
+
+		});
+
+		
+	</script>
+</body>
+</html>
